@@ -1,0 +1,41 @@
+name: Demo GitHub Actions
+
+on:
+  push:
+    branches: [main]
+  workflow_dispatch:  # Manual trigger
+
+jobs:
+  system-info:
+    runs-on: ubuntu-latest
+    steps:
+      - name: System Info
+        run: |
+          echo "=== GITHUB ACTIONS SERVER ==="
+          echo "OS: $(uname -a)"
+          echo "CPU: $(nproc) cores"
+          echo "RAM: $(free -h | grep Mem | awk '{print $2}')"
+          echo "Disk: $(df -h / | tail -1 | awk '{print $4}') free"
+          echo ""
+          echo "=== NETWORK ==="
+          echo "IP: $(curl -s ifconfig.me)"
+          echo "Location: $(curl -s ipinfo.io/city), $(curl -s ipinfo.io/country)"
+          echo ""
+          echo "=== TOOLS AVAILABLE ==="
+          python3 --version
+          node --version
+          docker --version
+          echo ""
+          echo "GitHub Actions = FREE SERVER!"
+
+  parallel-demo:
+    runs-on: ubuntu-latest
+    strategy:
+      matrix:
+        task: [A, B, C, D, E]
+    steps:
+      - name: Task ${{ matrix.task }}
+        run: |
+          echo "Running parallel task ${{ matrix.task }}"
+          sleep 5
+          echo "Task ${{ matrix.task }} completed!"
